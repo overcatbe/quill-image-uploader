@@ -33,7 +33,7 @@ Quill.register("modules/imageUploader", ImageUploader);
 							fileReader.addEventListener('load',() => {
 									let base64ImageSrc = fileReader.result;
 
-									console.log('blabla' + base64ImageSrc);
+									console.log('myImage' + base64ImageSrc);
 									/* upload 2 server */
 									fetch("https://domain/quill-imagetoserver.php",{
 												method: "POST",
