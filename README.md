@@ -18,28 +18,71 @@ npm install quill-image-uploader --save
 ### Webpack/ES6
 
 ```javascript
-import Quill from "quill";
-import ImageUploader from "quill.imageUploader.js";
-
 Quill.register("modules/imageUploader", ImageUploader);
+		var toolbarOptions = [
+			['bold', 'italic', 'underline', 'strike'],        // toggled buttons
+			['blockquote', 'code-block'],
+			['image'],
+			[{ 'list': 'ordered'}, { 'list': 'bullet' }],
+			[{ 'script': 'sub'}, { 'script': 'super' }],      // superscript/subscript
+			[{ 'indent': '-1'}, { 'indent': '+1' }],          // outdent/indent
+			[{ 'direction': 'rtl' }],                         // text direction
+			[{ 'size': ['small', false, 'large', 'huge'] }],  // custom dropdown
+			[{ 'header': [1, 2, 3, 4, 5, 6, false] }],
+			[{ 'color': [] }, { 'background': [] }],          // dropdown with defaults from theme
+			[{ 'font': [] }],
+			[{ 'align': [] }],
+			['clean']
+		];
 
-const quill = new Quill(editor, {
-  // ...
-  modules: {
-    // ...
-    imageUploader: {
-      upload: (file) => {
-        return new Promise((resolve, reject) => {
-          setTimeout(() => {
-            resolve(
-              "https://upload.wikimedia.org/wikipedia/commons/thumb/6/6a/JavaScript-logo.png/480px-JavaScript-logo.png"
-            );
-          }, 3500);
-        });
-      },
-    },
-  },
-});
+		var quill = new Quill('#editor', {
+			modules: {
+				toolbar: toolbarOptions,
+				imageUploader: {
+					upload: file => {
+						const fileReader = new FileReader();
+						return new Promise((resolve, reject) => {
+							fileReader.addEventListener('load',() => {
+									let base64ImageSrc = fileReader.result;
+
+									console.log('blabla' + base64ImageSrc);
+									/* upload 2 server */
+									fetch("https://domain/quill-imagetoserver.php",{
+												method: "POST",
+												body: base64ImageSrc
+											})
+									.then(response => response.json())
+									.then(result => {
+												console.log(result);
+												resolve(result.url);
+												//resolve("https://upload.wikimedia.org/wikipedia/commons/thumb/6/6a/JavaScript-logo.png/480px-JavaScript-logo.png");
+											})
+									.catch(error => {
+												reject("Upload failed");
+												console.error("Error:", error);
+											});
+
+									setTimeout(() => {
+										resolve(result.url);
+										//reject('Issue uploading file');
+									}, 1500);
+
+								},false);
+
+							if (file) {
+								fileReader.readAsDataURL(file);
+								//fileReader.readAsDataURL(result.url);
+								console.log();
+							} else {
+								reject("No file selected");
+							}
+
+						});
+					}
+				}
+			},
+			theme: 'snow'
+		});
 ```
 
 ### Quickstart (React with react-quill)
