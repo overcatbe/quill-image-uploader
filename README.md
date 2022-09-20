@@ -3,18 +3,6 @@
 A module for Quill rich text editor to allow images to be uploaded to a server instead of being base64 encoded.
 Adds a button to the toolbar for users to click, also handles drag,dropped and pasted images.
 
-## Demo
-
-![Image of Yaktocat](/static/quill-example.gif)
-
-### Install
-
-Install with npm:
-
-```bash
-npm install quill-image-uploader --save
-```
-
 ### Webpack/ES6
 
 ```javascript
